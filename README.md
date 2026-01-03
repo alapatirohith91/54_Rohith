@@ -25,6 +25,8 @@ Given a large-scale transaction dataset with an extremely low fraud rate, the ob
 - Fraud rate: < 1%  
 
 The dataset simulates mobile money transactions and reflects realistic fraud patterns, making it suitable for evaluating fraud detection models under severe class imbalance.
+
+
  **Dataset Link:**  
 https://www.kaggle.com/datasets/ealaxi/paysim1?resource=download
 
