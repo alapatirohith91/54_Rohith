@@ -1,173 +1,164 @@
+Transaction Fraud Detection at Scale
+Imbalanced Classification and Risk-Based Evaluation
+Overview
 
+Financial transaction fraud detection is a classic high-imbalance machine learning problem, where fraudulent cases make up less than 1% of total transactions.
+In such scenarios, traditional metrics like accuracy fail to reflect real performance.
 
-# 🚨 Transaction Fraud Detection at Scale
+This project focuses on building a practical fraud detection pipeline that prioritizes high-risk transactions, similar to how fraud systems are deployed in banks and fintech companies.
 
----
+Problem Statement
 
-## 🎯 Problem Statement
+Given a large transaction dataset with an extremely low fraud rate, the objective is to:
 
-Given millions of transaction records with **<1% fraud rate**, build a machine learning system that:
+Detect fraudulent transactions as early as possible
 
-* Identifies high-risk fraudulent transactions
-* Maximizes recall without overwhelming false alerts
-* Produces a ranked **fraud risk score** per transaction
+Maximize fraud recall while keeping false alerts manageable
 
----
+Assign a fraud risk score to each transaction instead of relying only on hard predictions
 
-## 📊 Dataset
+Dataset
 
-**PaySim – Synthetic Financial Fraud Dataset**
+PaySim – Synthetic Financial Transaction Dataset
 
-* Source: Kaggle
-* Link: [https://www.kaggle.com/datasets/ealaxi/paysim1](https://www.kaggle.com/datasets/ealaxi/paysim1)
-* Records: ~6.3 million
-* Fraud Rate: < 1%
+Source: Kaggle
 
-PaySim simulates real mobile money behavior, making it ideal for testing **fraud detection pipelines under realistic conditions**.
+Dataset Size: ~6.3 million transactions
 
----
+Fraud Rate: < 1%
 
-## 🧠 End-to-End Solution Architecture
+PaySim simulates real mobile money behavior and is commonly used to test fraud detection systems under realistic imbalance conditions.
 
-```
-Raw Transactions
+Approach and Workflow
+
+The project follows a structured, end-to-end machine learning pipeline:
+
+Raw Transaction Data
         ↓
-Data Cleaning & Encoding
+Data Cleaning and Encoding
         ↓
-Domain-Driven Feature Engineering
+Feature Engineering
         ↓
 Stratified Train-Test Split
         ↓
-Imbalance Handling (Class Weights / SMOTE)
+Class Imbalance Handling
         ↓
-Model Training (LightGBM)
+Model Training
         ↓
-Threshold Optimization
+Threshold Selection
         ↓
 Precision@K / Recall@K Evaluation
         ↓
-Fraud Risk Scoring (CSV Output)
-```
+Fraud Risk Scoring Output
 
----
+Feature Engineering
 
-## 🔬 Feature Engineering (Key Innovation)
+Instead of relying only on raw transaction fields, additional features were created to capture fraud behavior patterns:
 
-Instead of relying only on raw fields, the model learns **fraud behavior patterns** through:
+Difference between account balance before and after transaction
 
-* Balance change before vs after transaction
-* Transaction amount to balance ratio
-* Zero-balance anomaly indicators
-* Behavioral inconsistencies across transaction types
+Transaction amount relative to account balance
 
-These features significantly improve the model’s ability to detect **subtle fraud signals**.
+Zero-balance and near-zero balance indicators
 
----
+Inconsistencies across transaction types
 
-## ⚖️ Handling Severe Class Imbalance
+These features help the model detect behavioral anomalies, which are often more important than absolute values in fraud detection.
 
-Three strategies were evaluated:
+Handling Class Imbalance
 
-| Technique               | Purpose                           |
-| ----------------------- | --------------------------------- |
-| Baseline (No balancing) | Reference comparison              |
-| Class Weighting         | Penalizes fraud misclassification |
-| SMOTE                   | Synthetic fraud sample generation |
+Since fraud cases are extremely rare, multiple imbalance-handling techniques were tested:
 
-👉 **Class weighting with LightGBM** provided the best balance between recall and false positives.
+Method	Description
+No balancing	Baseline reference
+Class weighting	Penalizes fraud misclassification
+SMOTE	Generates synthetic fraud samples
 
----
+Class weighting combined with tree-based models produced the most stable results, improving recall without introducing excessive noise.
 
-## 🤖 Models Implemented
+Models Used
 
-* Logistic Regression (baseline)
-* Random Forest
-* **LightGBM (Final Model)**
+Logistic Regression (baseline)
 
-### Why LightGBM?
+Random Forest
 
-* Optimized for large-scale tabular data
-* Handles class imbalance natively
-* Faster training and superior recall
-* Widely adopted in real fraud detection systems
+LightGBM (final model)
 
----
+Why LightGBM?
 
-## 📐 Evaluation Strategy (Business-Aligned)
+Designed for large-scale tabular data
 
-Traditional accuracy is misleading for fraud problems.
-This project evaluates models using:
+Efficient training on millions of rows
 
-* **Precision@K** → Are the top K alerts actually fraud?
-* **Recall@K** → How many fraud cases are captured?
-* ROC-AUC
-* Confusion Matrix
+Handles imbalance effectively with class weights
 
-Additionally, **decision thresholds were tuned**, reflecting real-world alerting systems.
+Commonly used in real-world fraud detection systems
 
----
+Evaluation Strategy
 
-## 📈 Key Results
+Accuracy alone is not meaningful for fraud problems.
+Model performance was evaluated using:
 
-* Substantial improvement in fraud recall over baseline
-* High precision for top-ranked fraud alerts
-* Reduced false positives while maximizing fraud capture
-* Stable generalization on unseen data
+Precision@K – Are the top flagged transactions actually fraud?
 
----
+Recall@K – How many fraud cases are captured in the top K alerts?
 
-## 📤 Output: Fraud Risk Scoring
+ROC-AUC
 
-Final output is a **ranked fraud score CSV**:
+Confusion Matrix
 
-```text
+Decision thresholds were tuned to reflect how alert-based fraud systems work in production.
+
+Results
+
+Significant improvement in fraud recall compared to baseline models
+
+High precision among top-ranked fraud alerts
+
+Better balance between fraud detection and false positives
+
+Stable performance on unseen data
+
+Output Format
+
+The final model generates a ranked fraud risk score for each transaction:
+
 transaction_id, fraud_score, fraud_prediction
 100231, 0.93, 1
 100232, 0.08, 0
-```
 
-This format is ready for:
 
-* Fraud alert systems
-* Risk dashboards
-* Automated decision pipelines
+This output can be directly used in:
 
----
+Fraud monitoring dashboards
 
-## 🧰 Tech Stack
+Alerting systems
 
-* **Language:** Python
-* **ML:** scikit-learn, LightGBM
-* **Imbalance Handling:** imbalanced-learn
-* **Data:** pandas, numpy
-* **Visualization:** matplotlib
-* **Experiment Tracking (Optional):** MLflow
-* **Platform:** Jupyter Notebook
+Downstream decision pipelines
 
----
+Tech Stack
 
-## ▶️ How to Run
+Python
 
-```bash
-pip install -r requirements.txt
-jupyter notebook fraud_detection.ipynb
-```
+pandas, numpy
 
----
+scikit-learn
 
-## 🚀 Future Extensions
+LightGBM
 
-* Ensemble stacking (LightGBM + ANN)
-* Explainability using SHAP
-* Real-time fraud detection API
-* Adaptive thresholds based on transaction risk
+imbalanced-learn
 
----
+matplotlib
 
-## 🏁 Hackathon Impact Summary
+Jupyter Notebook
 
-✔ Real-world fraud detection framing
-✔ Imbalanced ML best practices
-✔ Business-relevant metrics
-✔ Scalable and deployable pipeline
-✔ Clear, judge-friendly documentation
+
+Future Improvements
+
+Model ensembling for improved robustness
+
+Feature importance and explainability using SHAP
+
+Real-time prediction API
+
+Dynamic thresholding based on transaction risk
