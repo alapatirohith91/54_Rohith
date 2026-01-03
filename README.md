@@ -2,23 +2,6 @@
 
 # 🚨 Transaction Fraud Detection at Scale
 
-### Imbalanced Classification with Precision@K Optimization
-
-> **Problem Focus:** Detecting fraudulent financial transactions in a highly imbalanced dataset using industry-grade machine learning techniques.
-
----
-
-## 🏆 Why This Project Stands Out
-
-Financial fraud datasets are **extremely skewed**, making accuracy meaningless. This project is built with a **real-world fraud detection mindset**, focusing on:
-
-* Class imbalance handling
-* Risk-based evaluation (Precision@K, Recall@K)
-* Threshold tuning instead of naïve classification
-* Scalable, production-ready ML pipeline
-
-This mirrors how **banks and fintech companies** actually deploy fraud detection systems.
-
 ---
 
 ## 🎯 Problem Statement
